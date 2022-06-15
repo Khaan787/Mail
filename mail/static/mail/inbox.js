@@ -11,35 +11,42 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function compose_email() {
-
+  
   // Show compose view and hide other views
   document.querySelector('#emails-view').style.display = 'none';
   document.querySelector('#compose-view').style.display = 'block';
+  document.querySelector('#compose-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    fetch("/emails", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        recipients: document.querySelector("#compose-recipients").value,
+        subject: document.querySelector("#compose-subject").value,
+        body: document.querySelector("#compose-body").value,
+      }),
+    })
+      .then((response) => response.json())
+      .then((result) => {
+        // Print result
+        console.log(result);
+        // Clear out composition fields
+        document.querySelector("#compose-recipients").value = "";
+        document.querySelector("#compose-subject").value = "";
+        document.querySelector("#compose-body").value = "";
+        load_mailbox("sent");
+      });
 
-  // After the compose view is loaded, the user should be able to send the email when the form is submitted
-  document.addEventListener('DOMContentLoaded',function(){
-    document.querySelector('#compose-form').onsubmit = function(){
-          fetch('/emails', {
-          method: 'POST',
-          body: JSON.stringify({
-              recipients: document.querySelector('#compose-recipients').value,
-              subject: document.querySelector('#compose-subject').value,
-              body: document.querySelector('#compose-body').value
-          })
-        })
-          .then(response => response.json())
-          .then(result => {
-            // Print result
-            console.log(result);
-        });
-          return false;
-    }
+    
+    
+    
+    
   })
+  
 
-  // Clear out composition fields
-  document.querySelector('#compose-recipients').value = '';
-  document.querySelector('#compose-subject').value = '';
-  document.querySelector('#compose-body').value = '';
+  
 }
 
 function load_mailbox(mailbox) {
