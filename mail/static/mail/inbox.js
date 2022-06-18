@@ -10,6 +10,8 @@ document.addEventListener('DOMContentLoaded', function() {
     load_mailbox('inbox');
   });
   
+  // Fixing this 
+  
   function compose_email() {
     
     // Show compose view and hide other views
